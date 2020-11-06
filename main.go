@@ -82,12 +82,6 @@ var (
 )
 
 func main() {
-	validTime, _ := time.Parse("2006-01-02 15:04:05", "2021-01-01 00:00:00")
-	nowTime := time.Now()
-	if nowTime.After(validTime) {
-		panic("本工具已失效")
-	}
-
 	flag.StringVar(&licenseName, "g", "", "生成一个永久license，需要指定用户名")
 	flag.StringVar(&originLicense, "p", "", "解析官方证书，需要指定证书路径")
 	flag.StringVar(&xrayFilePath, "c", "", "patch xray，需要指定xray程序文件路径")
@@ -105,6 +99,7 @@ func main() {
 	if xrayFilePath != "" {
 		patch(xrayFilePath)
 	}
+
 }
 
 func parseAlready(licenseFile string) {
@@ -138,9 +133,6 @@ func parseAlready(licenseFile string) {
 		fmt.Println("version ok: 2")
 	}
 
-	//fmt.Printf("pre 17: %x\n", base64DecodeData[:17])
-	//fmt.Printf("pre 17: %x\n", pre17Bytes)
-
 	//解密前有一个简单的变换处理
 	right := len(base64DecodeData) - 1
 	for l := 1; l < right; l++ {
@@ -153,7 +145,7 @@ func parseAlready(licenseFile string) {
 	//fmt.Println("trans bytes:", hex.EncodeToString(base64DecodeData))
 
 	// aes解密license
-	// 总长度 487，前面17个字节是单独加上的，所以总共解密出 480个字节的数据
+	// | 1B : version | 16B : aes iv | 480B : cipher |
 	aesDecData, err := Decrypt(base64DecodeData[17:], base64DecodeData[1:17])
 	if err != nil {
 		panic(err)
@@ -332,8 +324,8 @@ func importPrivateKey(key string) *rsa.PrivateKey {
 var (
 	origin386Bytes, _     = hex.DecodeString("0F95C083F0018844245083C430C3")
 	new386Bytes, _        = hex.DecodeString("0F94C083F0018844245083C430C3")
-	originAmd64Bytes, _   = hex.DecodeString("0F948424A8000000") //48837C244800
-	newAmd64Bytes, _      = hex.DecodeString("0F958424A8000000") //48837C244800
+	originAmd64Bytes, _   = hex.DecodeString("000F84BE020000")
+	newAmd64Bytes, _      = hex.DecodeString("000F85BE020000")
 	originArmBytes, _     = hex.DecodeString("000050E30000A0E30100A013010020E254")
 	newArmBytes, _        = hex.DecodeString("000050E30000A0E30100A0130100A0E354")
 	originAArch64Bytes, _ = hex.DecodeString("1F001FEBE0079F9A000040D2E0C3")
@@ -409,9 +401,9 @@ func patch(filePath string) {
 
 	origin, err := ioutil.ReadFile(filePath)
 	loc := bytes.LastIndex(origin, originBytes)
-	fmt.Printf("Signature last index: %#x\n", loc)
 
 	if loc > 0 {
+		fmt.Printf("Signature index: %#x\n", loc)
 		newFile := replace(origin, newBytes, loc)
 		err = ioutil.WriteFile(filePath, newFile, os.ModePerm)
 		if err == nil {
