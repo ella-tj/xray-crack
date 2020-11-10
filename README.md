@@ -14,8 +14,9 @@
 
 目前支持版本：
 
-- amd64 windows
-- amd64 linux
+- amd64 Windows
+- amd64 Linux
+- amd64 MacOS
 
 使用 `-c path-to-xray` 自动patch二进制xray
 
