@@ -12,12 +12,6 @@
 
 ### 破解 xray
 
-目前支持版本：
-
-- amd64 Windows
-- amd64 Linux
-- amd64 MacOS
-
 使用 `-c path-to-xray` 自动patch二进制xray
 
 ```bash
@@ -27,6 +21,8 @@ linux amd64
 Signature last index: 0xae2f2e
 Patch success: xray_linux_amd64
 ```
+
+Thanks to @nszy007 for providing patches
 
 ## 破解效果
 

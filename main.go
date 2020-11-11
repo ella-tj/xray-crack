@@ -322,14 +322,14 @@ func importPrivateKey(key string) *rsa.PrivateKey {
 }
 
 var (
-	origin386Bytes, _     = hex.DecodeString("0F95C083F0018844245083C430C3")
-	new386Bytes, _        = hex.DecodeString("0F94C083F0018844245083C430C3")
+	origin386Bytes, _     = hex.DecodeString("84C00F844A020000")
+	new386Bytes, _        = hex.DecodeString("84C00F854A020000")
 	originAmd64Bytes, _   = hex.DecodeString("000F84BE020000")
 	newAmd64Bytes, _      = hex.DecodeString("000F85BE020000")
-	originArmBytes, _     = hex.DecodeString("000050E30000A0E30100A013010020E254")
-	newArmBytes, _        = hex.DecodeString("000050E30000A0E30100A0130100A0E354")
-	originAArch64Bytes, _ = hex.DecodeString("1F001FEBE0079F9A000040D2E0C3")
-	newAArch64Bytes, _    = hex.DecodeString("1F001FEBE0079F9A200080D2E0C3")
+	originArmBytes, _     = hex.DecodeString("000050E37F00000A38209DE5010052E3")
+	newArmBytes, _        = hex.DecodeString("000050E37F00001A38209DE5010052E3")
+	originAArch64Bytes, _ = hex.DecodeString("E0034139201100B4E23B40F9")
+	newAArch64Bytes, _    = hex.DecodeString("E0034139201100B5E23B40F9")
 )
 
 func patch(filePath string) {
